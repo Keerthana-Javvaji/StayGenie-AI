@@ -1,0 +1,15 @@
+spring.application.name=Hotel_backend
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/Hotel_Booking
+spring.datasource.username=YOUR_DB_USERNAME
+spring.datasource.password=YOUR_DB_PASSWORD
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=false
+
+server.port=8080
+
+groq.api.key=YOUR_GROQ_API_KEY
+groq.api.url=https://api.groq.com/openai/v1/chat/completions
+groq.model=llama-3.3-70b-versatile

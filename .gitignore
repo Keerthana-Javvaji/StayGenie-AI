@@ -1,0 +1,21 @@
+# Sensitive config - DO NOT COMMIT
+src/main/resources/application.properties
+
+# Maven build output
+target/
+
+# IDE files
+.settings/
+.classpath
+.project
+.sts4-cache/
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
