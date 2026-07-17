@@ -20,7 +20,7 @@ export default function Dashboard() {
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get('http://localhost:8081/api/bookings/my', {
+      const response = await axios.get('https://staygenie-backend.onrender.com/api/bookings/my', {
         headers: { Authorization: `Bearer ${token}` }
       })
       setBookings(response.data)
@@ -34,7 +34,7 @@ export default function Dashboard() {
   const handleCancelBooking = async (bookingId) => {
     setCancellingId(bookingId)
     try {
-      await axios.put(`http://localhost:8081/api/bookings/${bookingId}/cancel`, {}, {
+      await axios.put(`https://staygenie-backend.onrender.com/api/bookings/${bookingId}/cancel`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       })
       // Update local state
