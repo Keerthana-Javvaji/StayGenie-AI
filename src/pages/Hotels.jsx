@@ -21,17 +21,29 @@ export default function Hotels() {
   }, [])
 
   const fetchHotels = async () => {
-    try {
-      const response = await axios.get('http://localhost:8081/api/hotels', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      setHotels(response.data)
-    } catch (err) {
-      console.error('Failed to fetch hotels:', err)
-    } finally {
-      setLoading(false)
-    }
+  try {
+    const response = await axios.get(
+      'https://staygenie-backend.onrender.com/api/hotels',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+
+    setHotels(response.data)
+
+  } catch (err) {
+    console.error(
+      'Failed to fetch hotels:',
+      err.response?.data || err.message
+    )
+
+  } finally {
+    setLoading(false)
   }
+}
 
   const handleLogout = () => {
     localStorage.removeItem('token')
