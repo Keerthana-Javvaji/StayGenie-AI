@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
+
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Hotels from './pages/Hotels'
@@ -8,34 +9,83 @@ import Dashboard from './pages/Dashboard'
 import TripPlanner from './pages/TripPlanner'
 import Payment from './pages/Payment'
 
+
 function App() {
+
   return (
-    <BrowserRouter>
+
+    <HashRouter>
+
       <Routes>
 
-        {/* Redirect root */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route 
+          path="/" 
+          element={<Navigate to="/login" replace />} 
+        />
 
-        {/* Handle Vercel index.html */}
-        <Route path="/index.html" element={<Navigate to="/login" replace />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route 
+          path="/login" 
+          element={<Login />} 
+        />
 
-        <Route path="/hotels" element={<Hotels />} />
-        <Route path="/hotels/:id" element={<HotelDetail />} />
 
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/trip-planner" element={<TripPlanner />} />
-        <Route path="/payment" element={<Payment />} />
+        <Route 
+          path="/register" 
+          element={<Register />} 
+        />
 
-        {/* Catch unknown routes */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+
+        <Route 
+          path="/hotels" 
+          element={<Hotels />} 
+        />
+
+
+        <Route 
+          path="/hotels/:id" 
+          element={<HotelDetail />} 
+        />
+
+
+        <Route 
+          path="/chat" 
+          element={<Chat />} 
+        />
+
+
+        <Route 
+          path="/dashboard" 
+          element={<Dashboard />} 
+        />
+
+
+        <Route 
+          path="/trip-planner" 
+          element={<TripPlanner />} 
+        />
+
+
+        <Route 
+          path="/payment" 
+          element={<Payment />} 
+        />
+
+
+        {/* fallback route */}
+        <Route 
+          path="*" 
+          element={<Navigate to="/login" replace />} 
+        />
 
       </Routes>
-    </BrowserRouter>
+
+
+    </HashRouter>
+
   )
+
 }
+
 
 export default App
