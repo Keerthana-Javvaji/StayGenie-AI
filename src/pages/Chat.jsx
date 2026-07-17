@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
+const API_URL = "https://staygenie-backend.onrender.com"
+
 export default function Chat() {
   const [messages, setMessages] = useState([
     {
@@ -33,10 +35,10 @@ export default function Chat() {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:8081/api/chat',
-        { message: userMessage },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
+      const response = await axios.post(`${API_URL}/api/chat`,
+  { message: userMessage },
+  { headers: { Authorization: `Bearer ${token}` } }
+)
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: response.data.response
