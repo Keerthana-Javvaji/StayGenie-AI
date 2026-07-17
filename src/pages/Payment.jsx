@@ -165,14 +165,19 @@ export default function Payment() {
 
           <div className="space-y-3">
             <button
-  onClick={() => navigate('/dashboard')}
+  onClick={() => {
+    navigate("/dashboard", { replace: true })
+  }}
   style={{ backgroundColor: '#1a2f5e' }}
-  className="w-full text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
+  className="w-full text-white py-3 rounded-xl font-semibold"
 >
   View My Bookings
 </button>
             <button
-  onClick={() => navigate('/hotels')}
+  onClick={() => {
+    navigate("/hotels", { replace: true })
+  }}
+  className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold"
 >
   Browse More Hotels
 </button>
