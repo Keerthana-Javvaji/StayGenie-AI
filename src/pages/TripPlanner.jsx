@@ -23,31 +23,64 @@ export default function TripPlanner() {
     "Plan a 5-day trip to Hyderabad"
   ]
 
-  const sendMessage = async () => {
-    if (!input.trim() || loading) return
-    const userMessage = input.trim()
-    setInput('')
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }])
-    setLoading(true)
+ const sendMessage = async () => {
+  if (!input.trim() || loading) return
 
-    try {
-      const response = await axios.post('http://localhost:8081/api/chat',
-        { message: userMessage },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      setMessages(prev => [...prev, {
+  const userMessage = input.trim()
+
+  setInput('')
+
+  setMessages(prev => [
+    ...prev,
+    {
+      role: 'user',
+      content: userMessage
+    }
+  ])
+
+  setLoading(true)
+
+  try {
+    const response = await axios.post(
+      'https://staygenie-backend.onrender.com/api/chat',
+      {
+        message: userMessage
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+
+    setMessages(prev => [
+      ...prev,
+      {
         role: 'assistant',
         content: response.data.response
-      }])
-    } catch (err) {
-      setMessages(prev => [...prev, {
+      }
+    ])
+
+  } catch (err) {
+
+    console.error(
+      'AI Chat Error:',
+      err.response?.data || err.message
+    )
+
+    setMessages(prev => [
+      ...prev,
+      {
         role: 'assistant',
         content: '❌ Sorry, I encountered an error. Please try again.'
-      }])
-    } finally {
-      setLoading(false)
-    }
+      }
+    ])
+
+  } finally {
+    setLoading(false)
   }
+}
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
