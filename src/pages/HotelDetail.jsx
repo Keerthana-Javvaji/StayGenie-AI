@@ -46,9 +46,9 @@ export default function HotelDetail() {
         axios.get(`${API_URL}/api/rooms/hotel/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`http://localhost:8081/api/reviews/hotel/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
+        axios.get(`${API_URL}/api/reviews/hotel/${id}`, {
+  headers: { Authorization: `Bearer ${token}` }
+})
       ])
       const found = hotelRes.data.find(h => h.id === parseInt(id))
       setHotel(found)
