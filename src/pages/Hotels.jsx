@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import ThemeToggle from "../components/ThemeToggle"
 
 export default function Hotels() {
   const [hotels, setHotels] = useState([])
