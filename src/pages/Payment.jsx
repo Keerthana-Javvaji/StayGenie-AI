@@ -33,31 +33,48 @@ export default function Payment() {
     return val.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1/$2').slice(0, 5)
   }
 
+  
   const handlePayment = async () => {
-    setProcessing(true)
-    setStep(2)
+  setProcessing(true)
+  setStep(2)
 
-    await new Promise(resolve => setTimeout(resolve, 2500))
+  await new Promise(resolve => setTimeout(resolve, 2500))
 
-    try {
-      const response = await axios.post('http://localhost:8081/api/bookings', {
-  hotel: { id: hotel.id },
-  room: { id: room.id },
-  checkInDate: checkIn,
-  checkOutDate: checkOut,
-  guests: guests
-}, {
-  headers: { Authorization: `Bearer ${token}` }
-})
+  try {
+    const response = await axios.post(
+      'https://staygenie-backend.onrender.com/api/bookings',
+      {
+        hotel: {
+          id: hotel.id
+        },
+        room: {
+          id: room.id
+        },
+        checkInDate: checkIn,
+        checkOutDate: checkOut,
+        guests: guests
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
 
-      setBookingId(response.data.id)
-      setStep(3)
-    } catch (err) {
-      console.error('Booking failed:', err)
-      setStep(1)
-      setProcessing(false)
-    }
+    setBookingId(response.data.id)
+    setStep(3)
+
+  } catch (err) {
+    console.error(
+      'Booking failed:',
+      err.response?.data || err.message
+    )
+
+    setStep(1)
+    setProcessing(false)
   }
+}
 
   const nights = checkIn && checkOut
     ? Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24))
