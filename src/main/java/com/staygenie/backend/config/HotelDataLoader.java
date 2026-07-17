@@ -1,4 +1,4 @@
-package com.staygenie.backend;
+package com.staygenie.backend.config;
 
 import com.staygenie.backend.entity.Hotel;
 import com.staygenie.backend.entity.Room;
