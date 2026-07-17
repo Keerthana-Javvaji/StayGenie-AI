@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 
+const API_URL = "https://staygenie-backend.onrender.com"
+
 export default function HotelDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -38,10 +40,10 @@ export default function HotelDetail() {
   const fetchHotelAndRooms = async () => {
     try {
       const [hotelRes, roomsRes, reviewsRes] = await Promise.all([
-        axios.get(`http://localhost:8081/api/hotels`, {
+        axios.get(`${API_URL}/api/hotels`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`http://localhost:8081/api/rooms/hotel/${id}`, {
+        axios.get(`${API_URL}/api/rooms/hotel/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
         axios.get(`http://localhost:8081/api/reviews/hotel/${id}`, {
@@ -93,7 +95,7 @@ export default function HotelDetail() {
     setReviewLoading(true)
     setReviewSuccess('')
     try {
-      const response = await axios.post('http://localhost:8081/api/reviews', {
+      const response = await axios.post(`${API_URL}/api/reviews`, {
         hotelId: parseInt(id),
         rating: reviewRating,
         commentText: reviewText
@@ -104,7 +106,7 @@ export default function HotelDetail() {
       setReviewText('')
       setReviewRating(0)
       const reviewsRes = await axios.get(
-        `http://localhost:8081/api/reviews/hotel/${id}`,
+        `${API_URL}/api/reviews/hotel/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       )
       setReviews(reviewsRes.data)
