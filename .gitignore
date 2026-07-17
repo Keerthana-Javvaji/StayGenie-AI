@@ -1,5 +1,4 @@
 # Sensitive config - DO NOT COMMIT
-src/main/resources/application.properties
 
 # Maven build output
 target/
