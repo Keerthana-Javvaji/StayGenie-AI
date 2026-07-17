@@ -85,19 +85,22 @@ export default function Hotels() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
 
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white drop-shadow">StayGenie ✨</h1>
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate('/trip-planner')}
-              className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
-            >
-              🗺️ Trip Planner
-            </button>
+
+  <ThemeToggle />
+
+  <button
+    onClick={() => navigate('/trip-planner')}
+    className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+  >
+    🗺️ Trip Planner
+  </button>
             <button
               onClick={() => navigate('/chat')}
               className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
