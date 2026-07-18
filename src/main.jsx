@@ -1,14 +1,24 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { Elements } from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
+
 import './index.css'
 import './styles/responsive.css'
+
 import App from './App.jsx'
 import { ThemeProvider } from "./context/ThemeContext"
+
+const stripePromise = loadStripe(
+  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
-      <App />
+      <Elements stripe={stripePromise}>
+        <App />
+      </Elements>
     </ThemeProvider>
   </StrictMode>,
 )

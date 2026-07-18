@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import StripeCheckout from "../components/StripeCheckout";
 import axios from 'axios'
 
 export default function Payment() {
@@ -11,10 +12,6 @@ export default function Payment() {
 
   const [step, setStep] = useState(1)
   const [paymentMethod, setPaymentMethod] = useState('card')
-  const [cardNumber, setCardNumber] = useState('')
-  const [cardName, setCardName] = useState('')
-  const [expiry, setExpiry] = useState('')
-  const [cvv, setCvv] = useState('')
   const [processing, setProcessing] = useState(false)
   const [bookingId, setBookingId] = useState(null)
   const [upiId, setUpiId] = useState('')
@@ -25,24 +22,17 @@ export default function Payment() {
     }
   }, [])
 
-  const formatCard = (val) => {
-    return val.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim().slice(0, 19)
-  }
+  const handlePayment = async (paymentIntentId = null) => {
 
-  const formatExpiry = (val) => {
-    return val.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1/$2').slice(0, 5)
-  }
+  setProcessing(true);
+  setStep(2);
 
-  
-  const handlePayment = async () => {
-  setProcessing(true)
-  setStep(2)
-
-  await new Promise(resolve => setTimeout(resolve, 2500))
+  await new Promise(resolve => setTimeout(resolve, 2500));
 
   try {
+
     const response = await axios.post(
-      'https://staygenie-backend.onrender.com/api/bookings',
+      "https://staygenie-backend.onrender.com/api/bookings",
       {
         hotel: {
           id: hotel.id
@@ -52,141 +42,40 @@ export default function Payment() {
         },
         checkInDate: checkIn,
         checkOutDate: checkOut,
-        guests: guests
+        guests: guests,
+        paymentIntentId: paymentIntentId
       },
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         }
       }
-    )
+    );
 
-    setBookingId(response.data.id)
-    setStep(3)
+    setBookingId(response.data.id);
+    setStep(3);
 
   } catch (err) {
-    console.error(
-      'Booking failed:',
-      err.response?.data || err.message
-    )
 
-    setStep(1)
-    setProcessing(false)
-  }
-}
+    console.error(err);
 
-  const nights = checkIn && checkOut
-    ? Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24))
-    : 0
+    setProcessing(false);
+    setStep(1);
 
-  if (step === 2) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-20 h-20 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            {paymentMethod === 'manual' ? 'Confirming Reservation...' : 'Processing Payment...'}
-          </h2>
-          <p className="text-gray-500">Please wait while we confirm your booking...</p>
-          <div className="mt-6 space-y-2 text-sm text-gray-400">
-            <p>🔒 Securing your booking...</p>
-            <p>✅ Verifying details...</p>
-            <p>🏨 Confirming with hotel...</p>
-          </div>
-        </div>
-      </div>
-    )
+    alert("Booking failed.");
+
   }
 
-  if (step === 3) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl shadow-xl p-10 max-w-md w-full text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-4xl">✅</span>
-          </div>
-          <h2 className="text-3xl font-bold text-green-600 mb-2">
-            {paymentMethod === 'manual' ? 'Reservation Confirmed!' : 'Payment Successful!'}
-          </h2>
-          <p className="text-gray-500 mb-6">
-            {paymentMethod === 'manual'
-              ? 'Your room is reserved. Please pay at check-in.'
-              : 'Your booking has been confirmed'}
-          </p>
-
-          <div className="bg-gray-50 rounded-2xl p-5 text-left space-y-3 mb-6">
-            <div className="flex justify-between">
-              <span className="text-gray-500">Hotel</span>
-              <span className="font-semibold text-gray-800">{hotel?.name}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Room</span>
-              <span className="font-semibold text-gray-800">{room?.roomType}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Check-in</span>
-              <span className="font-semibold text-gray-800">{checkIn}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Check-out</span>
-              <span className="font-semibold text-gray-800">{checkOut}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Guests</span>
-              <span className="font-semibold text-gray-800">{guests}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Payment</span>
-              <span className="font-semibold text-gray-800">
-                {paymentMethod === 'card' ? '💳 Card' :
-                 paymentMethod === 'upi' ? '📱 UPI' :
-                 paymentMethod === 'netbanking' ? '🏦 Net Banking' :
-                 '💵 Pay at Hotel'}
-              </span>
-            </div>
-            <div className="border-t border-gray-200 pt-3 flex justify-between">
-              <span className="font-bold text-gray-800">Total</span>
-              <span className="font-bold text-indigo-600 text-xl">
-                ₹{totalPrice?.toLocaleString()}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Booking ID</span>
-              <span className="font-semibold text-green-600">#{bookingId}</span>
-            </div>
-          </div>
-
-          {paymentMethod === 'manual' && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-4 text-sm text-yellow-700">
-              ⚠️ Please arrive before 6:00 PM or call the hotel to confirm.
-            </div>
-          )}
-
-          <div className="space-y-3">
-            <button
-  onClick={() => {
-    navigate("/dashboard", { replace: true })
-  }}
-  style={{ backgroundColor: '#1a2f5e' }}
-  className="w-full text-white py-3 rounded-xl font-semibold"
->
-  View My Bookings
-</button>
-            <button
-  onClick={() => {
-    navigate("/hotels", { replace: true })
-  }}
-  className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold"
->
-  Browse More Hotels
-</button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
+};
+const nights =
+  checkIn && checkOut
+    ? Math.ceil(
+        (new Date(checkOut) - new Date(checkIn)) /
+          (1000 * 60 * 60 * 24)
+      )
+    : 0;
+  // Stripe Payment
   return (
     <div className="min-h-screen bg-gray-50">
 
@@ -238,84 +127,18 @@ export default function Payment() {
           </div>
 
           {/* Card Details */}
-          {paymentMethod === 'card' && (
-            <div className="bg-white rounded-3xl shadow-sm p-6 space-y-4">
-              <h3 className="font-bold text-gray-800 mb-2">Card Details</h3>
+          {paymentMethod === "card" && (
+  <div className="bg-white rounded-3xl shadow-sm p-6">
+    <h3 className="font-bold text-gray-800 mb-4">
+      Secure Card Payment
+    </h3>
 
-              {/* Card Preview */}
-              <div
-                className="rounded-2xl p-5 text-white mb-4 h-40 flex flex-col justify-between"
-                style={{ background: 'linear-gradient(135deg, #1a2f5e, #4f46e5)' }}
-              >
-                <div className="flex justify-between items-start">
-                  <span className="text-white/70 text-sm">StayGenie Pay</span>
-                  <span className="text-2xl">💳</span>
-                </div>
-                <div>
-                  <p className="text-lg font-mono tracking-widest mb-2">
-                    {cardNumber || '•••• •••• •••• ••••'}
-                  </p>
-                  <div className="flex justify-between text-sm">
-                    <span>{cardName || 'CARD HOLDER'}</span>
-                    <span>{expiry || 'MM/YY'}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Card Number
-                </label>
-                <input
-                  type="text"
-                  value={cardNumber}
-                  onChange={(e) => setCardNumber(formatCard(e.target.value))}
-                  placeholder="1234 5678 9012 3456"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Cardholder Name
-                </label>
-                <input
-                  type="text"
-                  value={cardName}
-                  onChange={(e) => setCardName(e.target.value.toUpperCase())}
-                  placeholder="YOUR NAME"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Expiry Date
-                  </label>
-                  <input
-                    type="text"
-                    value={expiry}
-                    onChange={(e) => setExpiry(formatExpiry(e.target.value))}
-                    placeholder="MM/YY"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    CVV
-                  </label>
-                  <input
-                    type="password"
-                    value={cvv}
-                    onChange={(e) => setCvv(e.target.value.slice(0, 3))}
-                    placeholder="•••"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+    <StripeCheckout
+      amount={totalPrice}
+      onSuccess={handlePayment}
+    />
+  </div>
+)}
 
           {/* UPI */}
           {paymentMethod === 'upi' && (
@@ -401,7 +224,7 @@ export default function Payment() {
 
           {/* Pay Button */}
           <button
-            onClick={handlePayment}
+            onClick={paymentMethod === "manual" ? handlePayment : undefined}
             disabled={processing}
             style={{
               backgroundColor: paymentMethod === 'manual' ? '#16a34a' : '#1a2f5e'
