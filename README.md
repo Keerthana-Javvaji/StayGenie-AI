@@ -289,6 +289,17 @@ Result: POSITIVE ✅
 
 ---
 
+## Result:
+![Register](image.png)
+![login](image-1.png)
+![Home Page](image-2.png)
+![Hotels](image-3.png)
+![Hotel details](image-4.png)
+![Advanced Automatic Hotel Booking](image-5.png)
+![Trip Planner Ai](image-6.png)
+![Dashboard](image-7.png)
+
+
 ## 👩‍💻 Developer
 
 **Keerthana Javvaji**
